@@ -12,19 +12,28 @@
 
 #include "get_next_line.h"
 
-#ifndef BUFFER_SIZE
-# define BUFFER_SIZE 1024
-#endif
-
-char	*get_line(int fd, char *line)
+char	*get_line(int fd, char *tline)
 {
 	char	*line;
 	ssize_t	bytesread;
 
-	while (!ft_strchr(line, '/n') && bytesread > 0)
+	bytesread = 1;
+	while (bytesread > 0 && !ft_strchr(tline, '\n'))
 	{
-		line 
+		line = malloc(BUFFER_SIZE + 1);
+		if (!line)
+			return (NULL);
+		bytesread = read(fd, line, BUFFER_SIZE);
+		if (bytesread == -1)
+		{
+			free(line);
+			return (NULL);
+		}
+		line[bytesread] = '\0';
+		tline = ft_strjoin(tline, line);
+		free(line);
 	}
+	return (tline);
 }
 
 
@@ -32,15 +41,17 @@ char	*get_next_line(int fd)
 {
 	static char	*line;
 	char		*bytesread;
-	size_t		longline;
+	size_t		totallength;
 
-	longline = ft_strlen(get_line(fd, (char *)line) + 1);
+	totallength = ft_strlen(line) + BUFFER_SIZE + 1;
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (NULL);
+	line = malloc(totallength);
 	if (!line)
 		return (NULL);
-	if (fd < 0 || BUFFER_SIZE < 0)
+	line = get_line(fd, (char *)line);
+	if (!line || line[0] == '\0')
 		return (NULL);
-	line = malloc(longline);
-	line = get_line(fd, (char *)line); 
-	line[longline] = 0;
 	return (line);
 }
+
