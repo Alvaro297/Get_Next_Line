@@ -30,7 +30,11 @@ char	*ft_next_line(char *line)
 	tline = ft_calloc(sizeof(char), (ft_strlen(line) - i + 1));
 	i++;
 	while (line[i] != '\0')
-		tline[n++] = line[i++];
+	{
+		tline[n] = line[i];
+		n++;
+		i++;
+	}
 	free(line);
 	return (tline);
 }
