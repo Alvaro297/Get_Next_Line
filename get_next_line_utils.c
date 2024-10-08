@@ -45,7 +45,7 @@ char	*ft_strjoin(char *s1, char *s2)
 
 	i = 0;
 	j = 0;
-	space_memory = (char *)malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
+	space_memory = ft_calloc(sizeof(char), ft_strlen(s1) + ft_strlen(s2) + 1);
 	if (!space_memory)
 		return (NULL);
 	while (s1[i] != '\0')
@@ -60,4 +60,23 @@ char	*ft_strjoin(char *s1, char *s2)
 	}
 	space_memory[i + j] = '\0';
 	return (space_memory);
+}
+
+void	*ft_calloc(size_t size, size_t c)
+{
+	char			*result;
+	unsigned char	*str;
+	size_t			i;
+
+	result = malloc(size * c);
+	if (!result)
+		return (NULL);
+	i = 0;
+	str = (unsigned char *) result;
+	while (i < size * c)
+	{
+		str[i] = 0;
+		i++;
+	}
+	return (result);
 }
