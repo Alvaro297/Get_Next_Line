@@ -6,7 +6,7 @@
 /*   By: alvamart <alvamart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 12:14:40 by alvamart          #+#    #+#             */
-/*   Updated: 2024/10/02 13:53:26 by alvamart         ###   ########.fr       */
+/*   Updated: 2024/10/11 13:42:07 by alvamart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ size_t	ft_strlen(char *str)
 	size_t	i;
 
 	i = 0;
+	if (!str)
+		return (0);
 	while (str[i] != '\0')
 		i++;
 	return (i);
@@ -24,12 +26,12 @@ size_t	ft_strlen(char *str)
 
 char	*ft_strchr(char *s, int c)
 {
+	if (!s)
+		return (NULL);
 	while (*s)
 	{
 		if (*s == (char) c)
-		{
 			return ((char *)s);
-		}
 		s++;
 	}
 	if (c == '\0')
@@ -43,22 +45,25 @@ char	*ft_strjoin(char *s1, char *s2)
 	int		i;
 	int		j;
 
-	i = 0;
-	j = 0;
+	i = -1;
+	j = -1;
+	if (!s1)
+	{
+		s1 = ft_calloc(1, 1);
+		s1[0] = '\0';
+	}
+	if (!s1 || !s2)
+		return (NULL);
 	space_memory = ft_calloc(sizeof(char), ft_strlen(s1) + ft_strlen(s2) + 1);
 	if (!space_memory)
 		return (NULL);
-	while (s1[i] != '\0')
-	{
-		space_memory[i] = s1[i];
-		i++;
-	}
-	while (s2[j] != '\0')
-	{
+	if (s1)
+		while (s1[++i] != '\0')
+			space_memory[i] = s1[i];
+	while (s2[++j] != '\0')
 		space_memory[i + j] = s2[j];
-		j++;
-	}
 	space_memory[i + j] = '\0';
+	free(s1);
 	return (space_memory);
 }
 

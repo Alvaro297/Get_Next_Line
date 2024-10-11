@@ -6,7 +6,7 @@
 /*   By: alvamart <alvamart@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/02 12:14:25 by alvamart          #+#    #+#             */
-/*   Updated: 2024/10/02 13:52:22 by alvamart         ###   ########.fr       */
+/*   Updated: 2024/10/11 16:50:46 by alvamart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,19 +22,18 @@ char	*ft_next_line(char *line)
 	n = 0;
 	while (line[i] != '\0' && line[i] != '\n')
 		i++;
-	if (tline[i] == '\0')
+	if (!line[i])
 	{
 		free(line);
 		return (NULL);
 	}
 	tline = ft_calloc(sizeof(char), (ft_strlen(line) - i + 1));
+	if (!tline)
+		return (NULL);
 	i++;
 	while (line[i] != '\0')
-	{
-		tline[n] = line[i];
-		n++;
-		i++;
-	}
+		tline[n++] = line[i++];
+	tline[n] = '\0';
 	free(line);
 	return (tline);
 }
@@ -43,21 +42,29 @@ char	*full_line(char *tline)
 {
 	char	*line;
 	int		i;
+	int		j;
 
+	j = 0;
 	i = 0;
-	line = ft_calloc(sizeof(char), ft_strlen(tline));
+	if (!tline[j])
+		return (NULL);
+	while (tline[j] != '\n' && tline[j] != '\0')
+		j++;
+	line = ft_calloc(sizeof(char), j + 2);
+	if (!line)
+		return (NULL);
 	while (tline[i] != '\n' && tline[i] != '\0')
 	{
 		line[i] = tline[i];
 		i++;
 	}
-	if (tline[i] == '\n')
+	if (tline[i] && tline[i] == '\n')
 		line[i] = '\n';
 	line[++i] = '\0';
-	return(line);
+	return (line);
 }
 
-char	*get_line(int fd, char *tline)
+char	*ft_get_line(int fd, char *tline)
 {
 	char	*line;
 	ssize_t	bytesread;
@@ -66,12 +73,10 @@ char	*get_line(int fd, char *tline)
 	line = ft_calloc(sizeof(char), BUFFER_SIZE + 1);
 	if (!line)
 		return (NULL);
-	if (!tline)
-		tline = ft_calloc(1,1);
 	while (bytesread > 0 && !ft_strchr(tline, '\n'))
 	{
 		bytesread = read(fd, line, BUFFER_SIZE);
-		if (bytesread == -1)
+		if (bytesread < 0)
 		{
 			free(line);
 			return (NULL);
@@ -87,18 +92,28 @@ char	*get_next_line(int fd)
 {
 	static char	*tline;
 	char		*line;
-	char		*bytesread;
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
+	{
+		free(tline);
+		tline = NULL;
 		return (NULL);
-	
-	tline = get_line(fd, tline);
+	}
+	tline = ft_get_line(fd, tline);
 	if (!tline)
 		return (NULL);
 	line = full_line(tline);
 	tline = ft_next_line(tline);
+	if (line && *line == '\0')
+	{
+		free(line);
+		free(tline);
+		line = NULL;
+		tline = NULL;
+	}
 	return (line);
 }
+
 /*
 int	main(int argc, char **argv)
 {
@@ -107,8 +122,11 @@ int	main(int argc, char **argv)
 	int		i;
 
 	i = 0;
-	fd = open(argv[1], O_RDONLY);
-	while ((i <= 4))
+	argc = 1;
+	fd = open(argv[argc], O_RDONLY);
+	if (fd == -1)
+    	perror("Error opening file");
+	while ((i <= 6))
 	{
 		str = get_next_line(fd);
 		printf("%s", str);
