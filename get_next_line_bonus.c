@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alvamart <alvamart@student.42.fr>          +#+  +:+       +#+        */
+/*   By: alvamart <alvamart@student.42madrid.com>   +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/02 12:14:25 by alvamart          #+#    #+#             */
-/*   Updated: 2024/10/11 16:50:46 by alvamart         ###   ########.fr       */
+/*   Created: 2024/10/14 14:16:37 by alvamart          #+#    #+#             */
+/*   Updated: 2024/10/14 14:16:37 by alvamart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*ft_next_line(char *line)
 {
@@ -79,6 +79,7 @@ char	*ft_get_line(int fd, char *tline)
 		if (bytesread < 0)
 		{
 			free(tline);
+			tline = NULL;
 			free(line);
 			return (NULL);
 		}
@@ -91,22 +92,22 @@ char	*ft_get_line(int fd, char *tline)
 
 char	*get_next_line(int fd)
 {
-	static char	*tline = NULL;
+	static char	*tline[1024];
 	char		*line;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	tline = ft_get_line(fd, tline);
+	tline[fd] = ft_get_line(fd, tline[fd]);
 	if (!tline)
 		return (NULL);
 	line = full_line(tline);
-	tline = ft_next_line(tline);
+	tline[fd] = ft_next_line(tline[fd]);
 	if (line && *line == '\0')
 	{
 		free(line);
-		free(tline);
+		free(tline[fd]);
 		line = NULL;
-		tline = NULL;
+		tline[fd] = NULL;
 	}
 	return (line);
 }
