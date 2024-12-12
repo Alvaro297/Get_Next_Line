@@ -142,9 +142,7 @@ read(fd, buffer, 20);
 
 
 ## Graded by Moulinette
-![alt text](img/graded_by_moulinete.png)
+![alt text](graded.png)
 
-### GNL pdf  new curriculum
-[Download from HERE](https://drive.google.com/file/d/1Dg5NWIZD0WmaiNZEp0-DjIkD22Og3e4A/view?usp=sharing)
  
 
