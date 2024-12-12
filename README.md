@@ -22,7 +22,6 @@ as the buffer size for the read calls in your get_next_line.
 Make sure that your function behaves well when it reads from a file and when it
 reads from the standard input.
 
- :point_right: Locate in the **42-silicon-valley-libft** folder.
 
 **GNL with files**
 ```bash
@@ -142,7 +141,7 @@ read(fd, buffer, 20);
 
 
 ## Graded by Moulinette
-![alt text](graded.png)
+![alt text](grade.png)
 
  
 
